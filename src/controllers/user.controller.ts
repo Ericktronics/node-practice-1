@@ -14,7 +14,12 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = await UserService.getUserById(id);
+
+  if(!id) {
+    return res.status(400).send({ message: "Missing user ID" });
+  }
+  
+  const user = await UserService.getUserById(+id);
   if (user) {
     res.status(200).send(user);
   } else {
@@ -24,7 +29,12 @@ export const getUserById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, email } = req.body;
-  const updated = await UserService.updateUser(id, name, email);
+
+  if(!name || !email || !id) {
+    return res.status(400).send({ message: "Missing required fields" });
+  }
+
+  const updated = await UserService.updateUser(+id, name, email);
   if (updated) {
     res.status(200).send({ message: "User updated successfully" });
   } else {
@@ -34,7 +44,12 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const deleted = await UserService.deleteUser(id);
+
+  if(!id) {
+    return res.status(400).send({ message: "Missing user ID" });
+  }
+
+  const deleted = await UserService.deleteUser(+id);
   if (deleted) {
     res.status(200).send({ message: "User deleted successfully" });
   } else {

@@ -9,3 +9,5 @@ export const DB_DATABASE = process.env.DB_DATABASE || "node-practice-1";
 
 
 export const PORT = process.env.PORT || 3000;
+
+export const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
