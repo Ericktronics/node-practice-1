@@ -1,5 +1,6 @@
 import app from "./app";
 import { PORT } from "./config/env";
+import { logger } from "./config/logger";
 
 
 app.use("/healthCheck", (request, response) => {
@@ -7,8 +8,8 @@ app.use("/healthCheck", (request, response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Health check at http://localhost:${PORT}/healthCheck`);
+  logger.info(`Server is running on port ${PORT}`);
+  logger.info(`Health check at http://localhost:${PORT}/healthCheck`);
 }); 
 
 
