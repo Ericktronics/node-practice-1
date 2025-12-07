@@ -1,8 +1,7 @@
-import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "../config/env";
 import { logger } from "../config/logger";
-
+import * as AuthService from "../services/auth.service";
 logger.info("Auth middleware");
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
@@ -27,7 +26,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const secret = JWT_SECRET;
-    const decoded = jwt.verify(token, secret);
+    const decoded = AuthService.verifyToken(token, secret);
     logger.info("JWT verification successful", { decoded });
     req.user = decoded;
 

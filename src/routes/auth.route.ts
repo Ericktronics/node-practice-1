@@ -1,9 +1,7 @@
 import { Router } from "express";
-import { getToken } from "../controllers/auth.controller";
-
+import * as AuthController from "../controllers/auth.controller";
 const router: Router = Router();
 
-
-router.get("/token", getToken);
+router.post("/login", AuthController.login);
 
 export default router;

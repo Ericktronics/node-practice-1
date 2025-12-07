@@ -22,6 +22,6 @@ CREATE TABLE IF NOT EXISTS `tbuser_main` (
 INSERT INTO `tbuser_main` 
 (`first_name`, `last_name`, `email`, `password_hash`, `is_active`)
 VALUES
-('Pauline', 'Santos', 'pauline.santos@example.com', '$2b$10$gq1B7C2hCDtGQksG/niReO0UZzvdhMPmxjSPdZRhqUTrWyd4InENu', 1),
-('Henrick', 'Peralta', 'henrick.peralta@example.com', '$2b$10$gq1B7C2hCDtGQksG/niReO0UZzvdhMPmxjSPdZRhqUTrWyd4InENu', 1),
-('Marie', 'Lopez', 'marie.lopez@example.com', '$2b$10$gq1B7C2hCDtGQksG/niReO0UZzvdhMPmxjSPdZRhqUTrWyd4InENu', 1);
+('Pauline', 'Santos', 'pauline.santos@example.com', '$2a$11$g93EK37wy.1SbbfxF7OR/eS0o04SD.iaCI1HimrwrgqJKzpdXIHqK', 1),
+('Henrick', 'Peralta', 'henrick.peralta@example.com', '$2a$11$6xjKPrZH5GmHa6fevCBHpeh4WWJdptzZg91IyLlo7LPRFsMJgc3Qq', 1),
+('Marie', 'Lopez', 'marie.lopez@example.com', '$2a$11$lO/3GvhjA3iLdgOyNpRKjeR/lt2YjipMQSCNbNqSieNMVEqPtgrWS', 1);

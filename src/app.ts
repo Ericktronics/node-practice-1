@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import { auth } from "./middlewares/auth";
 import { requestLogger } from "./middlewares/requestLogger";
+import { refreshToken } from "./middlewares/refreshToken";
 
 const app: Express = express();
 
@@ -8,7 +9,7 @@ const routes = [
   {
     endpoint: "/api/user",
     route: require("./routes/user.route").default,
-    middleware: [express.json(), requestLogger, auth],
+    middleware: [express.json(), requestLogger, auth, refreshToken],
   },
   {
     endpoint: "/api/auth",

@@ -20,7 +20,10 @@ const transports: winston.transport[] = [
 ];
 
 // Add file transports in production or if LOG_TO_FILE is set
-if (process.env.NODE_ENV === "production" || process.env.LOG_TO_FILE === "true") {
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.LOG_TO_FILE === "true"
+) {
   transports.push(
     // File transport for errors
     new winston.transports.File({
@@ -46,7 +49,9 @@ if (process.env.NODE_ENV === "production" || process.env.LOG_TO_FILE === "true")
 
 // Create and export the logger
 export const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || (process.env.NODE_ENV === "production" ? "info" : "debug"),
+  level:
+    process.env.LOG_LEVEL ||
+    (process.env.NODE_ENV === "production" ? "info" : "debug"),
   format: combine(
     errors({ stack: true }),
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
@@ -58,7 +63,8 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       format: combine(colorize(), timestamp(), logFormat),
     }),
-    ...(process.env.NODE_ENV === "production" || process.env.LOG_TO_FILE === "true"
+    ...(process.env.NODE_ENV === "production" ||
+    process.env.LOG_TO_FILE === "true"
       ? [
           new winston.transports.File({
             filename: "logs/exceptions.log",
@@ -70,7 +76,8 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       format: combine(colorize(), timestamp(), logFormat),
     }),
-    ...(process.env.NODE_ENV === "production" || process.env.LOG_TO_FILE === "true"
+    ...(process.env.NODE_ENV === "production" ||
+    process.env.LOG_TO_FILE === "true"
       ? [
           new winston.transports.File({
             filename: "logs/rejections.log",
@@ -79,4 +86,3 @@ export const logger = winston.createLogger({
       : []),
   ],
 });
-

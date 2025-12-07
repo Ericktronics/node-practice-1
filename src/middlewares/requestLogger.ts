@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { logger } from "../config/logger";
 logger.info("Request logger middleware");
 
-export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const start = Date.now();
 
   // Log request
@@ -15,7 +19,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
   res.on("finish", () => {
     const duration = Date.now() - start;
     const logLevel = res.statusCode >= 400 ? "error" : "info";
-    
+
     logger[logLevel](`${req.method} ${req.path} ${res.statusCode}`, {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
@@ -25,4 +29,3 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
 
   next();
 };
-

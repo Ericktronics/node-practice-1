@@ -1,7 +1,11 @@
 import { type Request, type Response } from "express";
 import * as UserService from "../services/user.service";
 import { logger } from "../config/logger";
+import * as UserType from "../types/user.type";
+import * as PasswordManger from "../utils/password";
+
 logger.info("User controller");
+
 export const getUsers = async (req: Request, res: Response) => {
   logger.info("Getting users");
   const user = await UserService.getAllUsers();
@@ -10,17 +14,30 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
-  logger.info("Creating user", { name, email });
-  const userId = await UserService.createUser(name, email);
+  const { first_name, last_name, email, password_hash } = req.body;
+
+  logger.info("Creating user", { first_name, last_name, email, password_hash });
+
+  if (!first_name || !last_name || !email || !password_hash) {
+    return res.status(400).send({ message: "Missing required fields" });
+  }
+
+  const userCreatePayload: UserType.UserCreatePayload = {
+    first_name,
+    last_name,
+    email,
+    password_hash: await PasswordManger.hashPassword(password_hash),
+  };
+
+  const userId = await UserService.createUser(userCreatePayload);
   logger.info("User created", { userId });
   res.status(201).send({ id: userId });
-}
+};
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
   logger.info("Getting user by ID", { id });
-  if(!id) {
+  if (!id) {
     return res.status(400).send({ message: "Missing user ID" });
   }
   const user = await UserService.getUserById(+id);
@@ -30,28 +47,57 @@ export const getUserById = async (req: Request, res: Response) => {
   } else {
     res.status(404).send({ message: "User not found" });
   }
-}
+};
+
 export const updateUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { name, email } = req.body;
-  logger.info("Updating user", { id, name, email });
-  if(!name || !email || !id) {
-    return res.status(400).send({ message: "Missing required fields" });
+  const id = +req.params.id!;
+  const { first_name, last_name, email, password_hash, is_active } = req.body;
+  logger.info("Updating user", {
+    id,
+    first_name,
+    last_name,
+    email,
+    password_hash,
+  });
+
+  if (!id) {
+    return res.status(400).send({ message: "No User Id!" });
+  }
+  // if (!first_name || !last_name || !email || !password_hash || !id) {
+  //   return res.status(400).send({ message: "Missing required fields" });
+  // }
+
+  const user = await UserService.getUserById(+id);
+
+  logger.info("User found", { user });
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
   }
 
-  const updated = await UserService.updateUser(+id, name, email);
+  const userEdit: UserType.UserEditPayload = {
+    id: id ?? user.id,
+    first_name: first_name ?? user.first_name,
+    last_name: last_name ?? user.last_name,
+    password_hash: password_hash
+      ? await PasswordManger.hashPassword(password_hash)
+      : user.password_hash,
+    email: email ?? user.email,
+    is_active: is_active ?? user.is_active,
+  };
+
+  const updated = await UserService.updateUser(userEdit);
   logger.info("User updated", { updated });
   if (updated) {
     res.status(200).send({ message: "User updated successfully" });
   } else {
     res.status(404).send({ message: "User not found" });
-  }   
-}
+  }
+};
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   logger.info("Deleting user", { id });
-  if(!id) {
+  if (!id) {
     return res.status(400).send({ message: "Missing user ID" });
   }
 
@@ -63,4 +109,4 @@ export const deleteUser = async (req: Request, res: Response) => {
     logger.error("User not found");
     res.status(404).send({ message: "User not found" });
   }
-}   
+};
