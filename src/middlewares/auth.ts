@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "../config/env";
 import { logger } from "../config/logger";
 import * as AuthService from "../services/auth.service";
-logger.info("Auth middleware");
+logger.info("Auth middleware mounted");
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

@@ -30,8 +30,9 @@ export const createUser = async (req: Request, res: Response) => {
   };
 
   const userId = await UserService.createUser(userCreatePayload);
+  
   logger.info("User created", { userId });
-  res.status(201).send({ id: userId });
+  res.status(201).send({ userId });
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -41,12 +42,13 @@ export const getUserById = async (req: Request, res: Response) => {
     return res.status(400).send({ message: "Missing user ID" });
   }
   const user = await UserService.getUserById(+id);
-  logger.info("User fetched", { user });
-  if (user) {
-    res.status(200).send(user);
-  } else {
-    res.status(404).send({ message: "User not found" });
+  
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
   }
+  
+  logger.info("User fetched", { user });
+  res.status(200).send(user);
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -63,16 +65,12 @@ export const updateUser = async (req: Request, res: Response) => {
   if (!id) {
     return res.status(400).send({ message: "No User Id!" });
   }
-  // if (!first_name || !last_name || !email || !password_hash || !id) {
-  //   return res.status(400).send({ message: "Missing required fields" });
-  // }
-
   const user = await UserService.getUserById(+id);
 
-  logger.info("User found", { user });
   if (!user) {
     return res.status(404).send({ message: "User not found" });
   }
+  logger.info("User found", { user });
 
   const userEdit: UserType.UserEditPayload = {
     id: id ?? user.id,
@@ -86,12 +84,11 @@ export const updateUser = async (req: Request, res: Response) => {
   };
 
   const updated = await UserService.updateUser(userEdit);
-  logger.info("User updated", { updated });
-  if (updated) {
-    res.status(200).send({ message: "User updated successfully" });
-  } else {
-    res.status(404).send({ message: "User not found" });
+  if (!updated) {
+    return res.status(500).send({ message: "Failed to update user" });
   }
+  logger.info("User updated", { updated });
+  res.status(200).send({ message: "User updated successfully" });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -103,10 +100,9 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   const deleted = await UserService.deleteUser(+id);
   logger.info("User deleted", { deleted });
-  if (deleted) {
-    res.status(200).send({ message: "User deleted successfully" });
-  } else {
+  if (!deleted) {
     logger.error("User not found");
-    res.status(404).send({ message: "User not found" });
+    return res.status(404).send({ message: "User not found" });
   }
+  res.status(200).send({ message: "User deleted successfully" });
 };

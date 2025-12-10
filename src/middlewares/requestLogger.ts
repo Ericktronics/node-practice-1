@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "../config/logger";
-logger.info("Request logger middleware");
+logger.info("Request logger middleware mounted");
 
 export const requestLogger = (
   req: Request,
